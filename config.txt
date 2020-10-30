@@ -1,6 +1,6 @@
 [HIT Configuration]
-title = Robot Clarification # Your title here.
-description = Answer questions about an interaction with a robot. # Give a description!
+title = Testing the Effects of Robot Gesture on Distraction # Your title here.
+description = Test to see if patients have a higher degree of distraction when a robot uses gesture as oposed to not using gesture # Give a description!
 amt_keywords = Psychology, Philosophy, Trust, Robot, Robots, Ethics, Language, Interaction
 lifetime = 24
 us_only = true
