@@ -1,5 +1,5 @@
 [HIT Configuration]
-title = Testing the Effects of Robot Gesture on Distraction # Your title here.
+title = Testing the Effects of Robot Gesture on Human Distraction # Your title here.
 description = Test to see if patients have a higher degree of distraction when a robot uses gesture as oposed to not using gesture # Give a description!
 amt_keywords = Psychology, Philosophy, Trust, Robot, Robots, Ethics, Language, Interaction
 lifetime = 24
@@ -14,23 +14,23 @@ allow_repeats = false
 
 [Database Parameters]
 
-database_url = sqlite:///clarification.db
-#database_url = postgres://uvipxxpjjhbrdu:6837c98f00644d2933b5af79d8d54214e64af96054d902ec900ee20dba6199db@ec2-54-243-67-199.compute-1.amazonaws.com:5432/d2ktvi119cch6a # Example postgres database url
+#database_url = sqlite:///clarification.db
+#database_url = postgres://uvipxxpjjhbrdu:6837c98f00644d2933b5af79d8d54214e64af96054d902ec900ee20dba6199db@ec2-54-243-67-199.compute-1.amazonaws.com:5432/d2ktvi119cch6a 
 
 database_url = postgres://xvguufwkxmdrtn:0bdc6236e5ed9eaf18870946534ee0f2ab049bd77ca4dc8424468cfda0b728e9@ec2-3-215-207-12.compute-1.amazonaws.com:5432/dokeenotit5q9i
 
 [Server Parameters]
-host = 0.0.0.0 # Once you have heroku set up
-#host = localhost # If testing locally (before heroku deployment)
+host = 0.0.0.0 
+#host = localhost
 port = 22362
-cutoff_time = 60
+cutoff_time = 30
 logfile = server.log
-loglevel = 2
+loglevel = auto
 debug = true
 login_username = examplename
 login_pw = examplepassword
 threads = 1
-secret_key = 'change this'
+secret_key = 'changed'
 
 [Task Parameters]
 experiment_code_version = 1.0 # Update this every time you change your code! (Sometimes it breaks if you don't)
