@@ -41,7 +41,8 @@ var instructionPages = [ // add as a list as many pages as you like
 var intro_vid = "/static/videos/introduction"
 // These variables are prefixes to the paths of the videos we want to show,
 // which change depending on the condition we are randomly assigned.
-var command_vid = ""
+var command_vid1 = "/static/videos/Experiment_Video_with_Gestures"
+var command_vid2 = "/static/videos/Experiment_Video_without_Gestures"
 var prefix = "/static/videos"
 var cond = ""
 var video_conditions = [
@@ -62,44 +63,44 @@ Condition mod 4 will determine what latin square combination is displayed.
 
 // Below is the within-subjects portion of the experiment.
 // Each condition is shown four videos.
-var square_conditions=[];
-switch(mycondition % 4){
-  case 0:
-    square_conditions = [0,1,2,3];
-    break;
-  case 1:
-    square_conditions = [1,0,3,2];
-    break;
-  case 2:
-    square_conditions = [2,3,0,1];
-    break;
-  case 3:
-    square_conditions = [3,2,1,0];
-    break;
-}
+//var square_conditions=[];
+//switch(mycondition % 4){
+//  case 0:
+//    square_conditions = [0,1,2,3];
+//    break;
+//  case 1:
+//    square_conditions = [1,0,3,2];
+//    break;
+//  case 2:
+//    square_conditions = [2,3,0,1];
+//    break;
+//  case 3:
+//    square_conditions = [3,2,1,0];
+//    break;
+//}
 
 // Below is the between-subjects portion of the experiment.
 // Each condition is assigned a (action,response) pair.
-if (mycondition < 4) { // Cheat & Question
-    cond = "/response/question/"
-    command_vid = "/static/videos/command/cheat"
-}
-else if (mycondition >= 4 && mycondition < 8) { // Cheat & Rebuke
-    cond = "/response/rebuke/"
-    command_vid = "/static/videos/command/cheat"
-}
-else if (mycondition >= 8 && mycondition < 12) { // Steal & Question
-    cond = "/response/question/"
-    command_vid = "/static/videos/command/steal"
-}
-else { // Steal & Rebuke
-    cond = "/response/rebuke/"
-    command_vid = "/static/videos/command/steal"
-}
+//if (mycondition < 4) { // Cheat & Question
+//    cond = "/response/question/"
+//    command_vid = "/static/videos/command/cheat"
+//}
+//else if (mycondition >= 4 && mycondition < 8) { // Cheat & Rebuke
+//    cond = "/response/rebuke/"
+//   command_vid = "/static/videos/command/cheat"
+//}
+//else if (mycondition >= 8 && mycondition < 12) { // Steal & Question
+//    cond = "/response/question/"
+//    command_vid = "/static/videos/command/steal"
+//}
+//else { // Steal & Rebuke
+//    cond = "/response/rebuke/"
+//    command_vid = "/static/videos/command/steal"
+//}
 
-var iter = 0; // This keeps track of which video in square_conditions we are currently showing and is updated in the Questions function
-var response_vid = prefix + cond + video_conditions[square_conditions[iter]]; // This builds the path of the video we want to show currently
-var question_label = video_conditions[square_conditions[iter]]; // This is just the label of the video so the database is more readable
+//var iter = 0; // This keeps track of which video in square_conditions we are currently showing and is updated in the Questions function
+//var response_vid = prefix + cond + video_conditions[square_conditions[iter]]; // This builds the path of the video we want to show currently
+//var question_label = video_conditions[square_conditions[iter]]; // This is just the label of the video so the database is more readable
 
 
 /********************
@@ -201,7 +202,7 @@ var DemoQuestionnaire = function() {
 	    $('#next').removeAttr('disabled');
 	}
 	else {
-	    $('#next').prop('disabled', true);
+	    $('#next').prop('enabled', true);
 	}
     }
 
@@ -251,6 +252,7 @@ var VidCheck = function() {
             },
             error: prompt_resubmit
         });
+
     };
 
     // Load the questionnaire snippet
@@ -265,7 +267,7 @@ var VidCheck = function() {
             $('#next').removeAttr('disabled');
         }
         else {
-            $('#next').prop('disabled', true);
+            $('#next').prop('enabled', true);
         }
     }
 
@@ -492,8 +494,8 @@ var CommandVideo = function() {
     psiTurk.recordTrialData({'phase':'command_video', 'status':'begin'});
 
 
-    $("#mp4src").attr("src", command_vid+".mp4")
-    $("#oggsrc").attr("src", command_vid+".ogg")
+    $("#mp4src").attr("src", command_vid1+".mp4")
+    $("#oggsrc").attr("src", command_vid1+".ogg")
 
     $("#video2").load();
 
