@@ -25,9 +25,10 @@ var pages = [
     "intro_video.html",       // first of our videos
     "pretest.html",           // asking questions
     "command_video.html",     // more videos
+    "question1.html",         // more questions
     "response_video.html",    //
-    "questions.html",         // more questions
-    "final_question.html",    //
+    "question2.html",
+    "final_questions.html",   //
     "check_question.html"     // attention check question
 ];
 
@@ -41,15 +42,14 @@ var instructionPages = [ // add as a list as many pages as you like
 var intro_vid = "/static/videos/introduction"
 // These variables are prefixes to the paths of the videos we want to show,
 // which change depending on the condition we are randomly assigned.
-var command_vid1 = "/static/videos/Experiment_Video_with_Gestures"
-var command_vid2 = "/static/videos/Experiment_Video_without_Gestures"
+var command_vid = "/static/videos/withgesture"
+var response_vid = "/static/videos/withoutgesture"
+//var command_vid2 = "/static/videos/Experiment_Video_without_Gestures"
 var prefix = "/static/videos"
 var cond = ""
 var video_conditions = [
-  "toward_shrug",
-  "toward_hips",
-  "away_shrug",
-  "away_hips"
+  "with_gesture",
+  "without_gesture"
 ];
 
 /*
@@ -202,7 +202,7 @@ var DemoQuestionnaire = function() {
 	    $('#next').removeAttr('disabled');
 	}
 	else {
-	    $('#next').prop('enabled', true);
+	    $('#next').prop('disabled', true);
 	}
     }
 
@@ -267,7 +267,7 @@ var VidCheck = function() {
             $('#next').removeAttr('disabled');
         }
         else {
-            $('#next').prop('enabled', true);
+            $('#next').prop('disabled', true);
         }
     }
 
@@ -458,10 +458,9 @@ var Pretest = function() {
 
 
 /*****************
- * Command Video *
+ * Gesture Video *
  ****************/
-// This is the video in which the human issues their command
-// No questions are asked, and no input is required from the user
+// This is the video in which the robot maked gestures
 var CommandVideo = function() {
 
     var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your information. This might happen if you lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
@@ -494,8 +493,8 @@ var CommandVideo = function() {
     psiTurk.recordTrialData({'phase':'command_video', 'status':'begin'});
 
 
-    $("#mp4src").attr("src", command_vid1+".mp4")
-    $("#oggsrc").attr("src", command_vid1+".ogg")
+    $("#mp4src").attr("src", "/static/videos/withgesture.mp4")
+    $("#oggsrc").attr("src", "/static/videos/withgesture.ogg")
 
     $("#video2").load();
 
@@ -517,17 +516,102 @@ var CommandVideo = function() {
 
     $("#next").click(function () {
         record_responses();
-        currentview = new ResponseVideo();
+        currentview = new Question1();
     });
+};
+
+/**************
+ * Questions  *
+ **************/
+// This asks the user some questions about the videos they just watched.
+/*
+Note: In a traditional between-subjects experiment this is where we would
+stop and call the Check Question function, however in a within-subjects
+experiment we want to repeat the Command, Response, and Question functions as
+many times as elements in the square_conditions variable.
+*/
+var Question1 = function() {
+
+    var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your information. This might happen if you lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
+
+    // Nore that the phase is updated to reflect the new within-subjects assignment.
+    record_responses = function() {
+        psiTurk.recordTrialData({'phase':'questions_/static/videos/withgesture', 'status':'submit'});
+        psiTurk.recordUnstructuredData("with_gesture_", $("input[name='"+1+"']").val());
+        // for(i=1; i<=15; i++){
+        //     psiTurk.recordUnstructuredData(question_label +"_"+i,$("input[name='"+i+"']").val());
+        // }
+    };
+
+    prompt_resubmit = function() {
+	replaceBody(error_message);
+	$("#resubmit").click(resubmit);
+    };
+
+    resubmit = function() {
+	replaceBody("<h1>Trying to resubmit...</h1>");
+	reprompt = setTimeout(prompt_resubmit, 10000);
+
+	psiTurk.saveData({
+	    success: function() {
+		clearInterval(reprompt);
+
+	    },
+	    error: prompt_resubmit
+	});
+    };
+
+    // Load the questionnaire snippet
+    psiTurk.showPage('question1.html');
+    window.scrollTo(0, 0);
+    psiTurk.recordTrialData({'phase':'questions', 'status':'begin'});
+    //alert("mycondition... "+mycondition+ " = 0? "+(mycondition==0));
+
+    function checkenable(){
+        allclicked=true;
+        $(".not-clicked").each(function(i, val){
+            allclicked=false;
+        });
+        if(allclicked){
+        $('#next').removeAttr('disabled');
+        }
+    }
+
+    $(".not-clicked").click(function(e){
+        $(this).removeClass('not-clicked');
+        $(this).addClass('clicked');
+        checkenable();
+    });
+
+    $("#next").click(function () {
+        record_responses();
+	    currentview = new ResponseVideo();
+
+        /*
+        This reflects a within-subjets approach. In a between subjects approach
+        we would just move to a new CheckQuestion
+        */
+        //iter += 1;
+        //if (iter >= 4){
+        //  currentview = new CheckQuestion();
+        //}
+        //else {
+          // Here we need to update the within-subjects variables before hopping
+          // back in the experiment flow.
+        //  response_vid = prefix + cond + video_conditions[square_conditions[iter]];
+        //  question_label = video_conditions[square_conditions[iter]];
+        //  currentview = new ResponseVideo();
+        //}
+    });
+
 };
 
 
 /******************
- * Response Video *
+ * Non Gesture Video *
  *****************/
- // This is the video in which the robot issues its response
- // No questions are asked, and no input is required from the user
-var ResponseVideo = function() {
+ // This is the video in which the robot does not use gesture
+ var ResponseVideo = function() {
 
     var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your information. This might happen if you lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
 
@@ -560,8 +644,8 @@ var ResponseVideo = function() {
     psiTurk.recordTrialData({'phase':'response_video', 'status':'begin'});
 
 
-    $("#mp4src").attr("src", response_vid+".mp4")
-    $("#oggsrc").attr("src", response_vid+".ogg")
+    $("#mp4src").attr("src", "/static/videos/withoutgesture.mp4")
+    $("#oggsrc").attr("src", "/static/videos/withoutgesture.ogg")
 
     $("#video3").load();
 
@@ -583,10 +667,9 @@ var ResponseVideo = function() {
 
     $("#next").click(function () {
         record_responses();
-        currentview = new Questions();
+        currentview = new Question2();
     });
 };
-
 
 /**************
  * Questions  *
@@ -598,16 +681,18 @@ stop and call the Check Question function, however in a within-subjects
 experiment we want to repeat the Command, Response, and Question functions as
 many times as elements in the square_conditions variable.
 */
-var Questions = function() {
+var Question2 = function() {
 
     var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your information. This might happen if you lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
 
     // Nore that the phase is updated to reflect the new within-subjects assignment.
     record_responses = function() {
-        psiTurk.recordTrialData({'phase':'questions_'+response_vid, 'status':'submit'});
-        for(i=1; i<=15; i++){
-            psiTurk.recordUnstructuredData(question_label +"_"+i,$("input[name='"+i+"']").val());
-        }
+        psiTurk.recordTrialData({'phase':'questions_/static/videos/withoutgesture', 'status':'submit'});
+        psiTurk.recordUnstructuredData("without_gesture_", $("input[name='"+1+"']").val());
+
+        // for(i=1; i<=15; i++){
+        //     psiTurk.recordUnstructuredData(question_label +"_"+i,$("input[name='"+i+"']").val());
+        // }
     };
 
     prompt_resubmit = function() {
@@ -629,7 +714,7 @@ var Questions = function() {
     };
 
     // Load the questionnaire snippet
-    psiTurk.showPage('questions.html');
+    psiTurk.showPage('question2.html');
     window.scrollTo(0, 0);
     psiTurk.recordTrialData({'phase':'questions', 'status':'begin'});
     //alert("mycondition... "+mycondition+ " = 0? "+(mycondition==0));
@@ -651,26 +736,27 @@ var Questions = function() {
     });
 
     $("#next").click(function () {
-        record_responses();
+        //record_responses();
+	    currentview = new CheckQuestion();
+
         /*
         This reflects a within-subjets approach. In a between subjects approach
         we would just move to a new CheckQuestion
         */
-        iter += 1;
-        if (iter >= 4){
-          currentview = new CheckQuestion();
-        }
-        else {
+        //iter += 1;
+        //if (iter >= 4){
+        //  currentview = new CheckQuestion();
+        //}
+        //else {
           // Here we need to update the within-subjects variables before hopping
           // back in the experiment flow.
-          response_vid = prefix + cond + video_conditions[square_conditions[iter]];
-          question_label = video_conditions[square_conditions[iter]];
-          currentview = new ResponseVideo();
-        }
+        //  response_vid = prefix + cond + video_conditions[square_conditions[iter]];
+        //  question_label = video_conditions[square_conditions[iter]];
+        //  currentview = new ResponseVideo();
+        //}
     });
 
 };
-
 
 /********************
  * Final Questions   *
@@ -704,7 +790,7 @@ var FinalQuestions = function() {
 
 
     // Load the questionnaire snippet
-    psiTurk.showPage('last_questions.html');
+    psiTurk.showPage('final_questions.html');
 
     function hasClass(element, cls) {
         return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
