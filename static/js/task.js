@@ -309,7 +309,7 @@ var VidCheck = function() {
 
     $("#next").click(function () {
         record_responses();
-        currentview = new IntroVideo();
+        currentview = new CommandVideo();
     });
 };
 
